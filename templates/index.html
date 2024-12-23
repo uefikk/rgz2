@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block main %}
+
+<div class="glav_verh">
+    <form action="/rgz/login">
+        <button class="b1" type="submit">Логин</button>
+    </form>
+    {% if is_authenticated %}
+        <form action="/rgz/logout" method="POST">
+            <button class="b1" style="margin-left: 40px;" type="submit">Выйти</button>
+        </form>
+        <a href="/rgz/add_book" style="margin-left: 40px;">Добавить книгу</a>
+    {% endif %}
+    <div style="margin-left: 65%;">
+        {% if current_user.is_authenticated %}
+            {{ current_user.username }}
+        {% else %}
+            Привет, посетитель!
+        {% endif %}
+    </div>
+</div>
+
+<h1>Список книг</h1>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Название</th>
+            <th>Автор</th>
+            <th>Количество страниц</th>
+            <th>Издательство</th>
+            <th>Обложка</th>
+            {% if is_authenticated %}
+                <th>Действия</th>
+            {% endif %}
+        </tr>
+    </thead>
+    <tbody>
+        {% if books.items %}
+            {% for book in books.items %}
+                <tr>
+                    <td>{{ book.id }}</td>
+                    <td>{{ book.title }}</td>
+                    <td>{{ book.author }}</td>
+                    <td>{{ book.pages }}</td>
+                    <td>{{ book.publisher }}</td>
+                    <td>
+                        {% if book.cover_image_url %}
+                            <img style="width: 100px; height: 100px;" 
+                                src="/static/kartinki/{{ book.cover_image_url }}" alt="Обложка">
+                        {% else %}
+                            <span>Обложка отсутствует</span>
+                        {% endif %}
+                    </td>
+                    {% if is_authenticated %}
+                        <td>
+                            <form action="/rgz/delete_book/{{ book.id }}" method="post">
+                                <button type="submit">Удалить</button>
+                            </form>
+                        </td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="7">Книги отсутствуют</td>
+            </tr>
+        {% endif %}
+    </tbody>
+</table>
+
+<div>
+    Страница {{ books.page }} из {{ books.pages }}
+</div>
+
+{% if books.has_prev %}
+    <a href="/rgz?page={{ books.prev_num }}&sort={{ sort_field }}&direction={{ sort_direction }}">Предыдущие</a>
+{% endif %}
+
+{% if books.has_next %}
+    <a href="/rgz?page={{ books.next_num }}&sort={{ sort_field }}&direction={{ sort_direction }}">Следующие</a>
+{% endif %}
+{% endblock %}
