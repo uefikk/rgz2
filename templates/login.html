@@ -1,12 +1,16 @@
 {% extends "base.html" %}
+
 {% block lab %} РГЗ, Авторизация для менеджера {% endblock %}
+
 {% block main %}
+
     <h2>Пожалуйста, авторизуйтесь</h2>
     <div>
         {% for error in errors %}
             {{ error }}
         {% endfor %}
     </div>
+
     <form method="post">
         <div>
             <label for="username">Пользователь</label>
@@ -21,4 +25,5 @@
             <button type="reset">Отмена</button>
         </div>
     </form>
+    
 {% endblock %}
